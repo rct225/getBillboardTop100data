@@ -8,7 +8,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import json
 
 unique_songs = {}
-with open('Hot Stuff.csv') as csv_file:
+with open('test.csv') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
         unique_songs[row["Song"]] = row["Performer"]
@@ -40,7 +40,7 @@ for song in unique_songs.keys():
     pattern = re.compile('([^\s\w]|_)+')
     search_string = pattern.sub("", raw_search_string)
     print(search_string)
-    results = sp.search(q=search_string, type='track', limit=20)
+    results = sp.search(q="track:" + search_string + " artist:" + unique_songs[song], type='track', limit=20)
     # print(results)
     # if results:
     if results["tracks"]["total"] != 0:
