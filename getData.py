@@ -11,9 +11,12 @@ client_credentials_manager = SpotifyClientCredentials(client_id="ff5998c858ec4e1
 
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-fh = open('test_clean.txt', 'w+')
+fh = open('test_spotifyId.txt', 'w+')
+fhe = open('test_spotifyId_error.txt', 'w+')
 
 # Track,Artist,DeezerId,isrc
+print("Track,Artist,DeezerId,isrc,SpotifyId", file=fh)
+
 with open('test_isrc.txt') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
@@ -21,8 +24,10 @@ with open('test_isrc.txt') as csv_file:
         print(isrc)
         result = sp.search(q="isrc: "+isrc, limit=20, offset=0, type='track')
         if len(result["tracks"]["items"]) > 0:
-            print(result["tracks"]["items"][0]["id"])
+            data = ",".join([v for k,v in row.items()])
+            print(data + "," + result["tracks"]["items"][0]["id"], file=fh)
         else:
-            print("Can't find" + row["Track"])
+            print("Can't find" + row["Track"], file=fhe)
 
 fh.close()
+fhe.close()
