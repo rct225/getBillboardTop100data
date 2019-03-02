@@ -16,10 +16,11 @@ columns = ["Track","Artist","DeezerId","isrc","SpotifyId"]
 headers = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'uri', 'track_href', 'analysis_url', 'duration_ms', 'time_signature']
 header = ",".join(columns) + "," + ",".join(headers)
 
-print(header,fh)
+print(header,file=fh)
 with open('test_spotifyId.txt') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
+        print(row["Track"])
         res = sp.audio_features([row["SpotifyId"]])[0]
         data = []
         for h in headers:
