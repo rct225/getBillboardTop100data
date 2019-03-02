@@ -14,7 +14,7 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 fh = open('test_clean.txt', 'w+')
 
 # Track,Artist,DeezerId,isrc
-with open('isrc-test.txt') as csv_file:
+with open('test_isrc.txt') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
         isrc = row["isrc"]
