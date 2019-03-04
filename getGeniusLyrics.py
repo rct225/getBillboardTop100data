@@ -2,6 +2,8 @@ import csv
 import lyricsgenius
 import re
 import time
+from random import randint
+
 
 fh = open('test_genius_lyrics.txt', 'w+')
 fhe = open('test_genius_lyrics_error.txt', 'w+')
@@ -30,7 +32,7 @@ with open('test_spotifyId.txt') as csv_file:
     for row in csv_reader:
         track = row["Track"]
         search_track = re.sub(r"\s\(.*\)", "", track)
-        time.sleep(0.5)
+        sleep(randint(1, 3))
         song = genius.search_song(search_track, row["Artist"])
         data = ",".join([v for k, v in row.items()])
         print(track)
