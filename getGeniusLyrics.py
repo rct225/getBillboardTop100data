@@ -45,3 +45,6 @@ with open('test_spotifyId.txt') as csv_file:
             plyric = lyric.replace("\n", " ")
             print(data + "," + url + "," + "\"" + plyric + "\"",file=fh)
             # print(song.lyrics, file=fh)
+
+fh.close()
+fhe.close()
