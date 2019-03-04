@@ -1,6 +1,7 @@
 import csv
 import lyricsgenius
 import re
+import time
 
 fh = open('test_genius_lyrics.txt', 'w+')
 fhe = open('test_genius_lyrics_error.txt', 'w+')
@@ -29,6 +30,7 @@ with open('test_spotifyId.txt') as csv_file:
     for row in csv_reader:
         track = row["Track"]
         search_track = re.sub(r"\s\(.*\)", "", track)
+        time.sleep(0.5)
         song = genius.search_song(search_track, row["Artist"])
         data = ",".join([v for k, v in row.items()])
         print(track)
