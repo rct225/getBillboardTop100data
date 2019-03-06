@@ -41,22 +41,26 @@ for f in files:
             track = row["Track"]
             search_track = re.sub(r"\s\(.*\)", "", track)
             time.sleep(1)
-            song = genius.search_song(search_track, row["Artist"])
-            data = ",".join([v for k, v in row.items()])
-            print(track)
-            if song is None:
-                print(data + ",NOT_FOUND", file=fhe)
-            elif song.title.upper() != search_track.upper():
-                # print(row, file=fhe)
-                # print(song.title + " Track:" + search_track)
+            try:
+                song = genius.search_song(search_track, row["Artist"])
+                data = ",".join([v for k, v in row.items()])
+                print(track)
+                if song is None:
+                    print(data + ",NOT_FOUND", file=fhe)
+                elif song.title.upper() != search_track.upper():
+                    # print(row, file=fhe)
+                    # print(song.title + " Track:" + search_track)
+                    print(data + ",ERROR", file=fhe)
+                else:
+                    url = song.url
+                    # print(url)
+                    lyric = song.lyrics
+                    plyric = lyric.replace("\n", " ")
+                    print(data + "," + url + "," + "\"" + plyric + "\"",file=fh)
+                    # print(song.lyrics, file=fh)
+            except TypeError:
                 print(data + ",ERROR", file=fhe)
-            else:
-                url = song.url
-                # print(url)
-                lyric = song.lyrics
-                plyric = lyric.replace("\n", " ")
-                print(data + "," + url + "," + "\"" + plyric + "\"",file=fh)
-                # print(song.lyrics, file=fh)
+                continue
 
     fh.close()
     fhe.close()
