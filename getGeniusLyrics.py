@@ -40,10 +40,11 @@ for f in files:
         for row in csv_reader:
             track = row["Track"]
             search_track = re.sub(r"\s\(.*\)", "", track)
+            data = ",".join([v for k, v in row.items()])
             time.sleep(1)
             try:
                 song = genius.search_song(search_track, row["Artist"])
-                data = ",".join([v for k, v in row.items()])
+
                 print(track)
                 if song is None:
                     print(data + ",NOT_FOUND", file=fhe)
