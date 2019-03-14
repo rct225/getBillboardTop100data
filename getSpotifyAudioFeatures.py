@@ -19,23 +19,29 @@ headers = ['danceability', 'energy', 'key', 'loudness', 'mode',
            'analysis_url', 'duration_ms', 'time_signature']
 
 header = "\t".join(columns) + "\t" + "\t".join(headers)
-
+error_header = "\t".join(columns) + "\t" + "error"
 print(header, file=fh)
+print(error_header, file=fhe)
+
 with open('test_spotifyId.txt') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter='\t')
     for row in csv_reader:
-        print(row["Track"])
+        print(row["title"])
         row_data = "\t".join([v for k, v in row.items()])
-        res = sp.audio_features([row["SpotifyId"]])[0]
-        data = []
-        for h in headers:
-            data.append(str(res[h]))
-            # print(h + " " + str(res[h]))
+        try:
+            res = sp.audio_features([row["spotifyId"]])[0]
+            data = []
+            for h in headers:
+                data.append(str(res[h]))
+                # print(h + " " + str(res[h]))
 
-        # print(row_data)
-        row_entry = "\t".join(data)
-        # print(row_entry)
-        new_row = row_data + "\t" + row_entry
-        print(new_row, file=fh)
+            # print(row_data)
+            row_entry = "\t".join(data)
+            # print(row_entry)
+            new_row = row_data + "\t" + row_entry
+            print(new_row, file=fh)
+        except:
+            print(row_data + "\t" + "ERROR")
 
 fh.close()
+fhe.close()
