@@ -11,35 +11,35 @@ headers = {
 token = "frMuTEC5FiFQ9uSImyjXhr7CL2MNvPL65y9hWWQ95OjhL1AnGj"
 
 
-def search_deezer(artist, track):
-
-    query = "https://api.deezer.com/search?q=artist:\"" + artist + "\"%20title:\"" + track + "\"" + "&access_key=" + token
-
-    results = requests.get(query, headers=headers).content
-
-    return results.decode('utf-8')
-
-
-def get_isrc(track_id):
-
-    query = "https://api.deezer.com/track/" + str(track_id) + "&access_key=" + token
-
-    results = requests.get(query, headers=headers).content
-
-    return results.decode('utf-8')
+# def search_deezer(artist, track):
+#
+#     query = "https://api.deezer.com/search?q=artist:\"" + artist + "\"%20title:\"" + track + "\"" + "&access_key=" + token
+#
+#     results = requests.get(query, headers=headers).content
+#
+#     return results.decode('utf-8')
+#
+#
+# def get_isrc(track_id):
+#
+#     query = "https://api.deezer.com/track/" + str(track_id) + "&access_key=" + token
+#
+#     results = requests.get(query, headers=headers).content
+#
+#     return results.decode('utf-8')
 
 
 unique_songs = {}
 unique_artists = set()
-with open('Hot Stuff.csv') as csv_file:
-    csv_reader = csv.DictReader(csv_file, delimiter=',')
+with open('billboard_hot_100_1958_2018.tsv') as csv_file:
+    csv_reader = csv.DictReader(csv_file, delimiter='\t')
     for row in csv_reader:
-        unique_songs[row["Song"]] = row["Performer"]
+        unique_songs[row["Song"]] = {"artist": row["Performer"], "uniqueSongId": row["uniqueSongId"]}
         unique_artists.add(row["Performer"])
         
-fsa = open('song_artist.json', 'w+')
-json.dump(unique_songs, fsa)
-fsa.close()
+# fsa = open('song_artist.json', 'w+')
+# json.dump(unique_songs, fsa)
+# fsa.close()
 
 print(len(unique_songs.keys()))
 print(len(unique_artists))
@@ -48,7 +48,13 @@ i = 0
 fh = open('test_deezerId.txt', 'w+')
 fhe = open('test_deezerId_errors.txt', 'w+')
 
-for song,artist in unique_songs.items():
+print("title\tartist\tuniqueSongId\tdeezerId", file=fh)
+print("title\tartist\tuniqueSongId\tdeezerId", file=fhe)
+
+for song,value in unique_songs.items():
+    artist = value["artist"]
+    uniqueSongId = value["uniqueSongId"]
+
     query = "artist:\"" + artist + "\" track:\"" + song + "\""
     endpoint = "https://api.deezer.com/search?q="
 
@@ -61,9 +67,9 @@ for song,artist in unique_songs.items():
     res = test["data"]
     if res:
         p = res[0]
-        print(p["title"] + "," + p["artist"]["name"] + "," + str(p["id"]), file=fh)
+        print(p["title"] + "\t" + p["artist"]["name"] + "\t" + str(uniqueSongId) + "\t" + str(p["id"]), file=fh)
     else:
-        print(song + "," + artist + "," + "EMPTY", file=fhe)
+        print(song + "\t" + artist + "\t" + str(uniqueSongId) + "\t" + "NOT_FOUND", file=fhe)
 
 fhe.close()
 fh.close()
