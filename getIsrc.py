@@ -22,35 +22,35 @@ def get_isrc(track_id):
 fh = open('test_isrc.txt', 'w+')
 fhe = open('test_isrc_errors.txt', 'w+')
 
-#Track,Artist,DeezerId
+
+print("title\tartist\tuniqueSongId\tdeezerId\tisrc", file=fh)
+print("title\tartist\tuniqueSongId\tdeezerId\tisrc", file=fhe)
+
 with open('test_deezerId.txt') as csv_file:
-    csv_reader = csv.DictReader(csv_file, delimiter=',')
+    csv_reader = csv.DictReader(csv_file, delimiter='\t')
     for row in csv_reader:
-        track_id = row["DeezerId"]
+        track_id = row["deezerId"]
+        unique_id = row["uniqueSongId"]
         track = row["Track"]
         artist = row["Artist"]
         query = "https://api.deezer.com/track/" + str(track_id)
-        # endpoint = "https://api.deezer.com/search?q="
 
+        time.sleep(0.125)
+        try:
+            results = requests.get(query, headers=headers).content
 
-        results = requests.get(query, headers=headers).content
+            data = results.decode('utf-8')
+            test = json.loads(data)
+            if "id" in test.keys():
+                isrc = test["isrc"]
+                deezer_title = test["title"]
+                print(track + "\t" + artist + "\t" + str(unique_id) + "\t" + str(track_id) + "\t" + isrc, file=fh)
+            else:
+                print(track + "\t" + artist + "\t" + str(unique_id) + "\t" + str(track_id) + "\t" + "NOT_FOUND", file=fhe)
+        except KeyError:
+            print(track + "\t" + artist + "\t" + str(unique_id) + "\t" + str(track_id) + "\t" + "ERROR", file=fhe)
+            continue
 
-        data = results.decode('utf-8')
-        test = json.loads(data)
-        # print(test)
-        # print(track + "," + artist)
-        if "id" in test.keys():
-            isrc = test["isrc"]
-            deezer_title = test["title"]
-            print(track + "," + artist + "," + str(track_id) + "," + isrc, file=fh)
-        else:
-            print(str(track_id) + "," + data, file=fhe)
-        # print(res)
-        # if res:
-        #     p = res[0]
-        #     print(p["title"] + "," + p["artist"]["name"] + "," + str(p["id"]), file=fh)
-        # else:
-        #     print(song + "," + artist + "," + "EMPTY", file=fhe)
 
 fhe.close()
 fh.close()
