@@ -35,12 +35,14 @@ with open('test_deezerId.txt') as csv_file:
         artist = row["Artist"]
         query = "https://api.deezer.com/track/" + str(track_id)
 
+
         time.sleep(0.125)
         try:
             results = requests.get(query, headers=headers).content
 
             data = results.decode('utf-8')
             test = json.loads(data)
+            print(track + "," + artist)
             if "id" in test.keys():
                 isrc = test["isrc"]
                 deezer_title = test["title"]
