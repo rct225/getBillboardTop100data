@@ -22,13 +22,13 @@ for f in files:
     genius.skip_non_songs = True
 
     header = "\t".join(columns)
-    error_header = "\t".join(columns[0:5])
+    error_header = "\t".join(columns[0:6])
 
     print(header, file=fh)
     print(error_header, file=fhe)
 
     with open(f) as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter='\t', fieldnames=columns[0:5])
+        csv_reader = csv.DictReader(csv_file, delimiter='\t', fieldnames=columns[0:6])
 
         # next(csv_reader)
 
@@ -38,7 +38,7 @@ for f in files:
             # Regex for removing parentheses - Genius search doesn't seem to like them very much
             search_track = re.sub(r"\s\(.*\)", "", track)
             data = "\t".join([v for k, v in row.items()])
-            time.sleep(1)
+            time.sleep(.33)
             try:
                 song = genius.search_song(search_track, row["artist"])
 
