@@ -4,6 +4,7 @@ import re
 import time
 import sys
 
+# Make sure to remove header row from first file after split - to avoid issues with header not being skipped
 
 files = sys.argv[1:]
 print(files)
